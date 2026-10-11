@@ -25,7 +25,7 @@ def record():
 
         camera.configure(config)
 
-        encoder = H264Encoder(bitrate=4_000_000)
+        encoder = H264Encoder(bitrate=8_000_000)
         output = PyavOutput(URL, format="rtsp")
 
         log.info("Streaming camera to %s", URL)
