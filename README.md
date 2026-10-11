@@ -66,11 +66,6 @@ Or view it in vlc with:
 - `vlc --rtsp-tcp "rtsp://<ip address>:8554/cam"`
 
 
-It's also available
-
-
-Port 8554: rtsp://<pi-ip>:8554/cam — open this in VLC or another RTSP-compatible player, not a normal browser.
-
 ## Run in production
 
 Set up a *systemd* service to run the server at startup:
@@ -91,3 +86,14 @@ Start it on boot:
 Get the logs:
 
 - `journalctl --user -u flock_stream.service`
+
+View from any machine with:
+
+- `DISPLAY=:0 firefox --kiosk --new-window http://<ip address>:8888/cam/`
+
+Then continue with:
+
+- `cat flock_display.service > ~/.config/systemd/user/flock_display.service`
+- `systemctl --user daemon-reload`
+- `systemctl --user enable flock_display.service`
+- `systemctl --user start flock_display.service`

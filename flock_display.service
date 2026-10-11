@@ -1,0 +1,12 @@
+[Unit]
+Description=Flock Firefox Kiosk
+After=graphical-session.target
+
+[Service]
+Environment=DISPLAY=:0
+ExecStart=/usr/bin/firefox --kiosk --new-window http://100.120.202.117:8888/cam/
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target
