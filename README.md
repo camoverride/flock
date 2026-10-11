@@ -59,8 +59,17 @@ Then start and enable the service:
 
 - `python flock_stream.py`
 
-Then view the feed locally at `http://127.0.0.1:8888/cam/` or from another computer at `http://<ip address>:8888/cam/`
+Then view the feed locally in a browser at `http://127.0.0.1:8888/cam/` or from another computer at `http://<ip address>:8888/cam/`
 
+Or view it in vlc with:
+
+- `vlc --rtsp-tcp "rtsp://<ip address>:8554/cam"`
+
+
+It's also available
+
+
+Port 8554: rtsp://<pi-ip>:8554/cam — open this in VLC or another RTSP-compatible player, not a normal browser.
 
 ## Run in production
 
