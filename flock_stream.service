@@ -1,0 +1,15 @@
+[Unit]
+Description=Flock cameravVideo stream via RTSP
+After=default.target
+
+[Service]
+Type=simple
+Restart=always
+WorkingDirectory=/home/%u/flock
+ExecStart=/home/%u/flock/.venv/bin/python /home/%u/flock/flock_stream.py
+StandardOutput=journal
+StandardError=journal
+Environment="PATH=/home/%u/flock/.venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+[Install]
+WantedBy=default.target
