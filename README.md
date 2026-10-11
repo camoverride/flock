@@ -9,6 +9,26 @@ Set up the repo:
 - `git clone `
 - `python3 -m venv .venv --system-site-packages` (for pi cam library)
 
+Enable the camera module [link](https://docs.arducam.com/Raspberry-Pi-Camera/Native-camera/12MP-IMX477/#raspberry-pi-5-cm5). 
+
+Edit the config:
+
+- `sudo vim /boot/firmware/config.txt`
+
+And change:
+
+- `camera_auto_detect=0`.
+
+Under the `[all]` section add:
+
+- `dtoverlay=imx477`.
+
+Then `sudo reboot`.
+
+Test it out: 
+
+- `rpicam-still -o test.jpg`
+
 Install mediamtx server to handle RTSP stream:
 
 - `cd /tmp`
