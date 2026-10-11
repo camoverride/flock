@@ -19,7 +19,7 @@ def record():
 
     try:
         config = camera.create_video_configuration(
-            main={"size": (1440, 1080), "format": "YUV420"},
+            main={"size": (1920, 1440), "format": "YUV420"},
             raw={"size": (2028, 1520)},
             controls={"FrameRate": 30})
 
