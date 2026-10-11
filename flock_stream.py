@@ -7,7 +7,7 @@ from picamera2.outputs import PyavOutput    # type: ignore
 
 
 # Serve locally.
-URL = f"rtsp://127.0.0.1:8554/cam"
+URL = f"rtsp://127.0.0.1:8888/cam"
 
 # Set up logging.
 logging.basicConfig(level=logging.INFO)
