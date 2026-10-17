@@ -1,71 +1,41 @@
-from gpiozero import Button, LED, DigitalInputDevice # type: ignore
-from signal import pause
-from threading import Timer
-import subprocess
+from gpiozero import Button, LED, DigitalInputDevice  # type: ignore
+from playsound import playsound  # type: ignore
+from threading import Thread
+from time import sleep
 
 
 
-BUTTON_PIN = 26
-MOTION_PIN = 21
-LED_PIN = 17
-AUDIO_FILE = "audio/obey.mp3"
+button = Button(26, pull_up=True)
+motion = DigitalInputDevice(21, pull_up=False)
+leds = LED(17)
 
-silent = False
-led_timer = None
-audio_process = None
+sound_on = True
 
-led = LED(LED_PIN)
-button = Button(BUTTON_PIN, pull_up=True)
-motion = DigitalInputDevice(MOTION_PIN, pull_up=False)
+def wait_for_button():
+    global sound_on
+    while True:
+        button.wait_for_press()
+        sound_on = not sound_on
+        print("Sound on" if sound_on else "Sound off")
+        button.wait_for_release()
 
+Thread(
+    target=wait_for_button,
+    daemon=True).start()
 
-def play_audio():
-    """
-    Play the MP3 and wait for playback to finish.
-    """
-    if not silent:
-        subprocess.run([
-            "ffplay", "-nodisp", "-autoexit",
-            "-loglevel", "quiet", AUDIO_FILE
-        ], check=False)
+while True:
+    if motion.value:
+        # Turn on the LEDs if there's motion
+        leds.on()
 
+        # If audio is enabled, play it.
+        if sound_on:
+            playsound("audio/obey.mp3")
+        # Otherwise keep the LEDs on for 5 seconds.
+        else:
+            sleep(5)
 
-def turn_off_leds():
-    """
-    Turn off LEDs after the motion timeout.
-    """
-    led.off()
-
-
-def handle_motion():
-    """
-    Keep LEDs on for five seconds after the latest motion.
-    """
-    global led_timer
-
-    led.on()
-
-    if led_timer is not None:
-        led_timer.cancel()
-
-    led_timer = Timer(5, turn_off_leds)
-    led_timer.start()
-
-    play_audio()
-
-
-def toggle_mode():
-    """
-    Switch between silent and audio-enabled modes.
-    """
-    global silent
-
-    silent = not silent
-    print("Silent mode" if silent else "Audio mode enabled")
-
-
-button.when_pressed = toggle_mode
-motion.when_activated = handle_motion
-
-print("System ready!")
-pause()
+        leds.off()
+        sleep(1)
+    else:
+        sleep(1)
