@@ -1,77 +1,47 @@
-
-from gpiozero import Button, LED, DigitalInputDevice
-from signal import pause, SIGINT, SIGTERM
+from gpiozero import Button, LED, DigitalInputDevice  # type: ignore
+from signal import pause
 import subprocess
 import atexit
 
 
 
-BUTTON_PIN = 26
-MOTION_PIN = 21
-LED_PIN = 17
-AUDIO_FILE = "/home/pi/sounds/alert.mp3"
-
+led = LED(17)
+button = Button(26, pull_up=True)
+motion = DigitalInputDevice(21, pull_up=False)
 silent = True
-busy = False
-
-led = LED(LED_PIN)
-button = Button(BUTTON_PIN, pull_up=True)
-motion = DigitalInputDevice(MOTION_PIN, pull_up=False)
-
-
-def play_audio():
-    """
-    Play the MP3 (blocking)
-    """
-    if not silent:
-        subprocess.run([
-            "ffplay", "-nodisp", "-autoexit",
-            "-loglevel", "quiet", AUDIO_FILE
-        ], check=False)
+AUDIO_FILE = "audio/alert.mp3"
 
 
 def handle_motion():
     """
-    Turn on LEDs, play audio, then turn LEDs off.
+    Turn on LEDs, play sound, then turn off LEDs.
     """
-    global busy
+    led.on()
 
-    if busy:
-        return
-
-    busy = True
     try:
-        led.on()
-        play_audio()
+        if not silent:
+            subprocess.run([
+                "ffplay", "-nodisp", "-autoexit",
+                "-loglevel", "quiet", AUDIO_FILE])
+
     finally:
         led.off()
-        busy = False
 
 
 def toggle_mode():
     """
-    Toggle between silent and audio-enabled modes.
+    Toggle audio on or off.
     """
     global silent
     silent = not silent
-    print("Silent mode" if silent else "Audio mode enabled")
+    print("Silent" if silent else "Audio enabled")
 
 
-def cleanup():
-    """
-    Ensure LEDs are off when the program exits.
-    """
-    led.off()
-
-
-button.when_pressed = toggle_mode
+atexit.register(led.off)
 motion.when_activated = handle_motion
-
-atexit.register(cleanup)
-
-print("System ready — silent mode")
+button.when_pressed = toggle_mode
 
 try:
     pause()
 finally:
-    cleanup()
+    led.off()
