@@ -1,18 +1,18 @@
-from gpiozero import Button, LED, DigitalInputDevice # type: ignore
-from signal import pause
-from threading import Timer
+
+from gpiozero import Button, LED, DigitalInputDevice
+from signal import pause, SIGINT, SIGTERM
 import subprocess
+import atexit
 
 
 
 BUTTON_PIN = 26
 MOTION_PIN = 21
 LED_PIN = 17
-AUDIO_FILE = "audio/obey.mp3"
+AUDIO_FILE = "/home/pi/sounds/alert.mp3"
 
-silent = False
-led_timer = None
-audio_process = None
+silent = True
+busy = False
 
 led = LED(LED_PIN)
 button = Button(BUTTON_PIN, pull_up=True)
@@ -21,56 +21,57 @@ motion = DigitalInputDevice(MOTION_PIN, pull_up=False)
 
 def play_audio():
     """
-    Start MP3 playback without blocking.
+    Play the MP3 (blocking)
     """
-    global audio_process
-
     if not silent:
-        audio_process = subprocess.Popen([
-            "ffplay",
-            "-nodisp",
-            "-autoexit",
-            "-loglevel",
-            "quiet",
-            AUDIO_FILE])
-
-
-def turn_off_leds():
-    """
-    Turn off LEDs after the motion timeout.
-    """
-    led.off()
+        subprocess.run([
+            "ffplay", "-nodisp", "-autoexit",
+            "-loglevel", "quiet", AUDIO_FILE
+        ], check=False)
 
 
 def handle_motion():
     """
-    Keep LEDs on for five seconds after the latest motion.
+    Turn on LEDs, play audio, then turn LEDs off.
     """
-    global led_timer
+    global busy
 
-    led.on()
+    if busy:
+        return
 
-    if led_timer is not None:
-        led_timer.cancel()
-
-    led_timer = Timer(5, turn_off_leds)
-    led_timer.start()
-
-    play_audio()
+    busy = True
+    try:
+        led.on()
+        play_audio()
+    finally:
+        led.off()
+        busy = False
 
 
 def toggle_mode():
     """
-    Switch between silent and audio-enabled modes.
+    Toggle between silent and audio-enabled modes.
     """
     global silent
-
     silent = not silent
     print("Silent mode" if silent else "Audio mode enabled")
+
+
+def cleanup():
+    """
+    Ensure LEDs are off when the program exits.
+    """
+    led.off()
 
 
 button.when_pressed = toggle_mode
 motion.when_activated = handle_motion
 
-print("System ready!")
-pause()
+atexit.register(cleanup)
+
+print("System ready — silent mode")
+
+try:
+    pause()
+finally:
+    cleanup()
