@@ -19,6 +19,7 @@ I strongly recommend running everything behind a *Tailscale VPN* if internet acc
 Set up the repo:
 - `git clone git@github.com:camoverride/flock.git`
 - `python3 -m venv .venv --system-site-packages` (for pi cam library)
+- `sudo apt update && sudo apt install -y python3-gst-1.0 gir1.2-gstreamer-1.0 gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-libav`
 
 Enable the camera module [link](https://docs.arducam.com/Raspberry-Pi-Camera/Native-camera/12MP-IMX477/#raspberry-pi-5-cm5). If using thr 577, follow [these instructions](https://github.com/camoverride/flock/wiki/577-Install).
 
