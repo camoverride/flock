@@ -39,3 +39,6 @@ while True:
         sleep(1)
     else:
         sleep(1)
+
+    # Pause after every loop.
+    sleep(5)
