@@ -21,18 +21,13 @@ motion = DigitalInputDevice(MOTION_PIN, pull_up=False)
 
 def play_audio():
     """
-    Start MP3 playback without blocking.
+    Play the MP3 and wait for playback to finish.
     """
-    global audio_process
-
     if not silent:
-        audio_process = subprocess.Popen([
-            "ffplay",
-            "-nodisp",
-            "-autoexit",
-            "-loglevel",
-            "quiet",
-            AUDIO_FILE])
+        subprocess.run([
+            "ffplay", "-nodisp", "-autoexit",
+            "-loglevel", "quiet", AUDIO_FILE
+        ], check=False)
 
 
 def turn_off_leds():
