@@ -20,7 +20,7 @@ Set up the repo:
 - `git clone git@github.com:camoverride/flock.git`
 - `python3 -m venv .venv --system-site-packages` (for pi cam library)
 
-Enable the camera module [link](https://docs.arducam.com/Raspberry-Pi-Camera/Native-camera/12MP-IMX477/#raspberry-pi-5-cm5). 
+Enable the camera module [link](https://docs.arducam.com/Raspberry-Pi-Camera/Native-camera/12MP-IMX477/#raspberry-pi-5-cm5). If using thr 577, follow [these instructions](https://github.com/camoverride/flock/wiki/577-Install).
 
 Edit the config:
 - `sudo vim /boot/firmware/config.txt`
