@@ -97,18 +97,18 @@ Or view it in vlc with:
 
 On the Raspberry Pi connected to the Flock sensor, set up a *systemd* service to run the server at startup:
 - `mkdir -p ~/.config/systemd/user`
-- `cat flock_stream.service > ~/.config/systemd/user/flock_stream.service`
+- `cat flock_display.service > ~/.config/systemd/user/flock_display.service`
 
 Start the service using the commands below:
 - `systemctl --user daemon-reload`
-- `systemctl --user enable flock_stream.service`
-- `systemctl --user start flock_stream.service`
+- `systemctl --user enable flock_display.service`
+- `systemctl --user start flock_display.service`
 
 Start it on boot:
 - `sudo loginctl enable-linger $(whoami)`
 
 Get the logs:
-- `journalctl --user -u flock_stream.service`
+- `journalctl --user -u flock_display.service`
 
 On the optional second machine running Ubuntu, set up the video viewer. **NOTE**: the Raspberry pi that captures the video stream from the Flock sensor and the computer that displays the video stream (if different computers) must be on the same LAN or VPN. Also **NOTE** that this code can easily be adapted for a machine running MacOS, Windows, or Raspbian.
 
